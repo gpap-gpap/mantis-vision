@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 import requests
+import mantis.rock_physics as manRP
+import mantis.rock_physics.fluid as manFL
 from mantis_vision.statefulness import *
 import mantis_vision.base_functions as bf
 from PIL import Image
@@ -87,12 +89,12 @@ def convert_file_to_df(state, status):
 
         elif state.file.name.endswith(".xlsx"):
             state.current_earth_model = pd.read_excel(state.input_file)
-
+        state.file_uploaded = True
     return state, status
 
 
 def plot_earth_model(state, status):
-    if state.current_earth_model is not None:
+    if state.file_uploaded:
         status.info("plotting earth model...")
         with st.sidebar:
             fig = bf.plot_1d_model(state.current_earth_model)
@@ -108,7 +110,7 @@ def add_title_step_2(state):
     Adding title for step 2 - begin chatting
     """
 
-    if state.input_file is not None:
+    if state.file_uploaded:
         advance()
         st.info(
             "You have succesfully uploaded a 1D Earth model, great stuff! Now, let's move on and do some rock physics",
@@ -135,24 +137,76 @@ def add_title_step_2(state):
 
 
 def add_title_step_3(state):
-    if state.current_layer is not None:
-        advance()
-        hline()
+    if state.file_uploaded:
+        # advance()
+        # hline()
         st.markdown(
-            f"### Now choose the fluid to substitute and the rock physics model to use on the layer"
+            f"### Now choose the fluid that will displace water and a rock physics model"
         )
-        state.current_fluid = st.selectbox(
-            label="Fluid",
-            options=["Water", "Oil", "Gas"],
-        )
-        state.current_model = st.selectbox(
-            label="Rock Physics Model",
-            options=["Hudson", "Gassmann"],
-        )
+        col1, col2, col3 = st.columns([0.3, 0.3, 1])
+        with col1:
+            fluid = st.radio(
+                label="Fluid",
+                options=["CarbonDioxide", "Hydrogen", "Methane"],
+            )
+            with st.expander("Advanced"):
+                st.write(bf.fluid_data[fluid])
+            # pres_range = fluid_data["Pres-MPa"].unique())
+            # st.slider(
+            #     "Pressure (MPa)",
+            #     min_value=int(pres_range.min()),
+            #     max_value=int(pres_range.max()),
+            #     step=5,
+            #     key="pres",
+            # )
+            # temp_range = np.array(fluids["Temp-degC"].unique())
+            # st.slider(
+            #     "Temperature (deg C)",
+            #     min_value=float(temp_range.min()),
+            #     max_value=float(temp_range.max()),
+            #     step=3.5,
+            #     key="temp",
+            # )
+            # st.slider(
+            #     "Patchiness (small is patchy)",
+            #     min_value=0.0,
+            #     max_value=1.0,
+            #     value=1.0,
+            #     step=0.1,
+            #     key="patch",
+            # )
+        with col2:
+            state.current_model = st.radio(
+                label="Rock Physics Model",
+                options=[
+                    "Hudson",
+                    "Gassmann",
+                    "SLS",
+                    "Chapman",
+                    "White",
+                    "Continuous Random Medium",
+                ],
+            )
+        with col3:
+            st.write(
+                f"{state.current_fluid} displacing water using {state.current_model} model"
+            )
+
+        fluid1 = manFL.Fluid.from_presets(name="Water", temperature=23, pressure=16.0)
+        # state.current_fluid = manFL.Fluid.from_presets(
+        #     name=state.current_fluid, temperature=52.0, pressure=16.0
+        # )
+
+        if (
+            st.button("I have forward modelled my layer, let's do some AVO!")
+            and state.file_uploaded
+        ):
+            state.layer_modelled = True
+            advance()
 
 
 def add_title_step_4(state):
-    if state.current_fluid is not None and state.current_model is not None:
+    if state.layer_modelled:
         advance()
         hline()
         st.markdown(f"### Now choose the parameters for the rock physics model")
@@ -165,29 +219,32 @@ def add_title_step_4(state):
 
 
 def add_title_step_5(state):
-    if state.current_parameters is not None and state.current_model is not None:
+    if state.layer_modelled:
         advance()
         hline()
         st.markdown(
             f"### Now choose an interface to see the AVO, fAVO, and AVA response"
         )
+        if st.button("How about wavefield modelling?"):
+            state.complete_simulation = True
 
 
 def conclude(state):
-    hline()
-    st.write("### Thank you for using the app!")
-    with st.form(key="my_form", clear_on_submit=True):
-        st.write(
-            """Please enter your email so that we send you a one-page report of your session. 
-            Feel free (bot not obliged) to include any feedback you may have. We will only contact you 
-            if you ask us to."""
-        )
-        feedback = st.text_input(label="Feedback")
-        email = st.text_input(label="Email")
-        submit_button = st.form_submit_button(label="Submit (resets the session)")
-    if submit_button:
-        set_all_states(state)
-        st.toast("Thank you for your feedback!")
+    if state.complete_simulation:
+        hline()
+        st.write("### Thank you for using the app!")
+        with st.form(key="my_form", clear_on_submit=True):
+            st.write(
+                """Please enter your email so that we send you a one-page report of your session. 
+                Feel free (bot not obliged) to include any feedback you may have. We will only contact you 
+                if you ask us to."""
+            )
+            feedback = st.text_input(label="Feedback")
+            email = st.text_input(label="Email")
+            submit_button = st.form_submit_button(label="Submit (resets the session)")
+        if submit_button:
+            set_all_states(state)
+            st.toast("Thank you for your feedback!")
 
 
 def input_query_text_area(state, status):

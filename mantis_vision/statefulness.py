@@ -15,6 +15,16 @@ def set_all_states(state):
         state.current_model = None
     if "current_parameters" not in state:
         state.current_parameters = None
+    if "file_uploaded" not in state:
+        state.file_uploaded = False
+    if "layer_modelled" not in state:
+        state.layer_modelled = False
+    if "AVO_modelled" not in state:
+        state.AVO_modelled = False
+    if "wavefield_modelled" not in state:
+        state.wavefield_modelled = False
+    if "complete_simulation" not in state:
+        state.complete_simulation = False
     return state
 
 
