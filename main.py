@@ -15,6 +15,7 @@ def main():
     # st.write("")
 
     state, status = structured_pipeline(state, status)
+
     # state.process_select_confirmed = st.button("Start Process")
 
     # if state.process_select_confirmed is True:
