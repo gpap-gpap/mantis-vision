@@ -14,8 +14,11 @@ expected_logs = ["Depth", "Vp", "Vs", "Rho"]
 
 fluid_data = pd.DataFrame(manFL.fluid_data)
 
+water = manFL.Fluid.from_presets(name="Water", temperature=52.0, pressure=16.0)
+
 model_parameters_dict = {
     "SLS": {
+        "identifier": "sls",
         "Q_sls": {
             "description": "Quality factor",
             "min": 5,
@@ -29,6 +32,27 @@ model_parameters_dict = {
             "max": 7.0,
             "step": 0.5,
             "default": 0.0,
+        },
+    },
+    "Gassmann": {
+        "identifier": "gassmann",
+        "Km": {
+            "description": "Mineral modulus",
+            "min": 10,
+            "max": 50,
+            "step": 1,
+            "default": 37,
+        },
+        "fluid": {
+            "description": "Fluid",
+            "default": water,
+        },
+        "Phi": {
+            "description": "Porosity",
+            "min": 0.05,
+            "max": 0.40,
+            "step": 0.05,
+            "default": 0.20,
         },
     },
 }
@@ -69,6 +93,34 @@ def plot_1d_model(dataframe: pd.DataFrame, highligh_layer: int = None):
             return fig
         except (AttributeError, ValueError):
             return None
+
+
+def my_format(array: np.ndarray) -> str:
+    df = pd.DataFrame(array)
+    style = (
+        df.style.hide(axis=0)
+        .hide(axis=1)
+        .format(precision=1)
+        .set_properties(**{"border-style": "none", "font-size": "14px"})
+        .set_table_styles(
+            [
+                # {'selector' : '', 'props' : [('border-left', '2px solid darkgreen')]},
+                # {'selector' : '', 'props' : [('border-right', '2px solid darkgreen')]},
+                {"selector": "tr", "props": [("border-top", "none")]},
+            ]
+        )
+        .applymap(
+            lambda v: "opacity: 20%;"
+            if (np.abs(v) < 0.01) and (np.abs(v) > -0.01)
+            else None
+        )
+    )
+    return style.to_html()
+
+
+def format_XY(array: np.ndarray) -> str:
+    string = "\n".join([f"{my_format(array)}"])
+    return string
 
 
 def fluid_mix_plot(f: manFL.FluidMix, title: str = ""):

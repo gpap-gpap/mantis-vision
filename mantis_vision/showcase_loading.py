@@ -5,6 +5,7 @@ import mantis.rock_physics as manRP
 import mantis.rock_physics.fluid as manFL
 from mantis_vision.statefulness import *
 import mantis_vision.base_functions as bf
+import yagmail
 from PIL import Image
 
 
@@ -153,12 +154,14 @@ def add_title_step_2(state, status):
         step=1,
     )
     display = state.current_earth_model.iloc[state.current_layer]
+
     display["thickness"] = round(
         -display["Depth"]
         + state.current_earth_model.iloc[state.current_layer + 1]["Depth"],
         1,
     )
     st.write(display)
+
     # status.info(f"Layer {state.current_layer} chosen")
 
 
@@ -169,7 +172,7 @@ def add_title_step_3(state):
     col1, col2, col3 = st.columns([0.3, 0.3, 1])
     with col1:
         second_fluid = st.radio(
-            label="Fluid",
+            label="Displacement Fluid",
             options=["CarbonDioxide", "Hydrogen", "Methane"],
         )
         fluid1 = manFL.Fluid.from_presets(name="Water", temperature=23, pressure=16.0)
@@ -203,40 +206,64 @@ def add_title_step_3(state):
             label="Rock Physics Model",
             options=[
                 "Gassmann",
-                "White",
-                "Hudson",
                 "SLS",
-                "Chapman",
-                "Continuous Random Medium",
+                # "White",
+                # "Hudson",
+                # "Chapman",
+                # "Continuous Random Medium",
             ],
         )
-        st.write(dict(state.current_earth_model.iloc[state.current_layer][1:]))
+        for key, val in bf.model_parameters_dict[model].items():
+            if key not in state and key != "identifier":
+                state[key] = val["default"]
+        params_dict = state.current_earth_model.iloc[state.current_layer][1:].to_dict()
+        layer_parameters = {key: float(val) for key, val in params_dict.items()}
+        model_parameters = {
+            key: state[key]
+            for key, val in bf.model_parameters_dict[model].items()
+            if key != "identifier"
+        }
+        fluid = {"fluid": state.current_fluid}
+        # st.write(model_parameters)
         #! TODO: For some reason, the first row in the dataframe is returned as a string
         #! TODO: Either this is the wrong way to interrogate the dataframe or there's
         #! TODO: something wrong with the CSV file
-        state.current_parameters = {
-            **dict(state.current_earth_model.iloc[state.current_layer][1:]),
-            **{"Q_sls": 10, "Log_omega_ref": 2},
-        }
+
+        state.current_parameters = {**layer_parameters, **fluid, **model_parameters}
         st.write(state.current_parameters)
-        state.current_model = manRP.models(identifier="sls", **state.current_parameters)
+        state.current_model = manRP.models(
+            identifier=bf.model_parameters_dict[model]["identifier"],
+            **state.current_parameters,
+        )
         with st.expander("Advanced"):
             try:
                 params = bf.model_parameters_dict[model]
                 for key, value in params.items():
-                    st.slider(
-                        label=value["description"],
-                        min_value=value["min"],
-                        max_value=value["max"],
-                        step=value["step"],
-                        value=value["default"],
-                    )
+                    if key != "fluid" and key != "identifier":
+                        st.slider(
+                            label=value["description"],
+                            min_value=value["min"],
+                            max_value=value["max"],
+                            key=key,
+                            step=value["step"],
+                        )
             except KeyError:
                 pass
     with col3:
-        st.radio("plots", options=["fluid properties", "rock properties"])
+        radio = st.radio(
+            "plots", options=["fluid properties", "rock properties", "cij"]
+        )
+        cij_container = st.container()
         st.write(f"{second_fluid} displacing water using {model} model")
-        st.write(state.current_fluid_plot)
+        if radio == "fluid properties":
+            cij_container.write(state.current_fluid_plot)
+        elif radio == "rock properties":
+            pass
+        elif radio == "cij":
+            cij_container.write(
+                bf.format_XY(state.current_model.Cij()), unsafe_allow_html=True
+            )
+            # cij_container.write(bf.plot_rock_properties(state.current_model))
     # state.current_fluid = manFL.Fluid.from_presets(
     #     name=state.current_fluid, temperature=52.0, pressure=16.0
     # )
@@ -342,10 +369,18 @@ def structured_pipeline(state, status):
             feedback = st.text_input(label="Feedback")
             email = st.text_input(label="Email")
             submit_button = st.form_submit_button(
-                label="Submit (resets the session)", on_click=set_state, args=[0]
+                label="Submit (resets the session)",
             )
             if submit_button:
                 st.toast("Thank you for your feedback!")
+                try:
+                    yag = yagmail.SMTP(
+                        "mantis.from.image@gmail.com",
+                        oauth2_file=".streamlit/credentials.json",
+                    )
+                    yag.send(to=email, subject="test")
+                except Exception as e:
+                    st.write(e)
     return state, status
 
 
