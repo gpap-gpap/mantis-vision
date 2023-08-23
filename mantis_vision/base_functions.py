@@ -6,8 +6,12 @@ import pandas as pd
 import mantis.rock_physics.fluid as manFL
 import mantis.rock_physics as manRP
 import numpy as np
+import re
 
 # from mantis.rock_physics.fluid import fluid_data as fd
+regex = re.compile(
+    r"([-!#-'*+/-9=?A-Z^-~]+(\.[-!#-'*+/-9=?A-Z^-~]+)*|\"([]!#-[^-~ \t]|(\\[\t -~]))+\")@([-!#-'*+/-9=?A-Z^-~]+(\.[-!#-'*+/-9=?A-Z^-~]+)*|\[[\t -Z^-~]*])"
+)
 
 
 expected_logs = ["Depth", "Vp", "Vs", "Rho"]

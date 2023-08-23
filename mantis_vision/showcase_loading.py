@@ -6,6 +6,7 @@ import mantis.rock_physics.fluid as manFL
 from mantis_vision.statefulness import *
 import mantis_vision.base_functions as bf
 import yagmail
+import re  # for email validation
 from PIL import Image
 
 
@@ -62,22 +63,26 @@ def file_loading_process(state, status):
     format_title(
         "Start here. Upload a CSV or XLS file with four columns: Depth, Vp, Vs, Rho"
     )
-    uploaded_file = st.file_uploader(label="", type=["xlsx", "csv"])
+    uploaded_file = st.file_uploader(label="", type=["xlsx", "csv"], key="input_file")
 
-    if uploaded_file is None:
-        state.input_file = None
-        # state = state_upload_file_none(state)
+    # if uploaded_file is None:
+    #     state.input_file = None
+    #     # state = state_upload_file_none(state)
 
-    else:
-        # file converted to numpy array for later processing
+    # else:
+    #     # file converted to numpy array for later processing
 
-        state.input_file = uploaded_file
-        if state.input_file.name.endswith(".csv"):
-            state.current_earth_model = pd.read_csv(state.input_file, dtype=float)
-        elif state.file.name.endswith(".xlsx"):
-            state.current_earth_model = pd.read_excel(state.input_file, dtype=float)
-        state.file_path = state.input_file.name
-        # state.current_earth_model = state.file_path
+    #     state.input_file = uploaded_file
+    #     if state.input_file.name.endswith(".csv"):
+    #         state.current_earth_model = pd.read_csv(state.input_file, dtype=float)
+    #     elif state.file.name.endswith(".xlsx"):
+    #         state.current_earth_model = pd.read_excel(state.input_file, dtype=float)
+    #     state.file_path = state.input_file.name
+    #     # state.current_earth_model = state.file_path
+    if state.input_file.name.endswith(".csv"):
+        state.current_earth_model = pd.read_csv(state.input_file, dtype=float)
+    elif state.file.name.endswith(".xlsx"):
+        state.current_earth_model = pd.read_excel(state.input_file, dtype=float)
     status.info("First load an earth model")
 
     state.file_uploaded = True
@@ -225,9 +230,6 @@ def add_title_step_3(state):
         }
         fluid = {"fluid": state.current_fluid}
         # st.write(model_parameters)
-        #! TODO: For some reason, the first row in the dataframe is returned as a string
-        #! TODO: Either this is the wrong way to interrogate the dataframe or there's
-        #! TODO: something wrong with the CSV file
 
         state.current_parameters = {**layer_parameters, **fluid, **model_parameters}
         st.write(state.current_parameters)
@@ -303,8 +305,20 @@ def structured_pipeline(state, status):
     def set_state(i):
         st.session_state.stage = i
 
-    def set_state_and_plot(i):
-        set_state(i)
+    def set_state_after_email(email: str):
+        if re.fullmatch(bf.regex, email) is None:
+            st.write("Email not sent or invalid email address")
+            st.toast("Thank you for your participation!")
+        else:
+            try:
+                yag = yagmail.SMTP(
+                    "mantis.from.image@gmail.com",
+                    oauth2_file=".streamlit/credentials.json",
+                )
+                yag.send(to=email, subject="test")
+            except Exception as e:
+                st.write(e)
+            st.toast("Thank you for your feedback!")
 
     with st.sidebar:
         container = st.container()
@@ -317,7 +331,7 @@ def structured_pipeline(state, status):
             "Start here. Upload a CSV or XLS file with four columns: Depth, Vp, Vs, Rho"
         )
         state.input_file = st.file_uploader(
-            label="", type=["xlsx", "csv"], on_change=set_state_and_plot, args=[2]
+            label="", type=["xlsx", "csv"], on_change=set_state, args=[2]
         )
         if state.input_file is not None:
             if state.input_file.name.endswith(".csv"):
@@ -359,6 +373,18 @@ def structured_pipeline(state, status):
             args=[4],
         )
     if st.session_state.stage >= 4:
+        st.button(
+            "Enough AVO, let's see some synthetically generated wavefields!",
+            on_click=set_state,
+            args=[5],
+        )
+    # if st.session_state.stage >= 5:
+    #     st.button(
+    #         "",
+    #         on_click=set_state,
+    #         args=[6],
+    #     )
+    if st.session_state.stage >= 5:
         st.write(f"Thank you!")
         with st.form(key="my_form", clear_on_submit=True):
             st.write(
@@ -367,20 +393,22 @@ def structured_pipeline(state, status):
                 if you ask us to."""
             )
             feedback = st.text_input(label="Feedback")
-            email = st.text_input(label="Email")
-            submit_button = st.form_submit_button(
-                label="Submit (resets the session)",
+            st.text_input(
+                label="Email (optional, but required for the report)",
+                key="user_email",
             )
-            if submit_button:
-                st.toast("Thank you for your feedback!")
-                try:
-                    yag = yagmail.SMTP(
-                        "mantis.from.image@gmail.com",
-                        oauth2_file=".streamlit/credentials.json",
-                    )
-                    yag.send(to=email, subject="test")
-                except Exception as e:
-                    st.write(e)
+
+            def callback(arg):
+                set_state_after_email(state.user_email)
+                set_state(arg)
+
+            submit_button = st.form_submit_button(
+                label="Submit and/or restart session", on_click=callback, args=[0]
+            )
+            # if submit_button:
+            #     # set_state_after_email(state.user_email)
+            #     st.toast("Let's see if this works!")
+
     return state, status
 
 

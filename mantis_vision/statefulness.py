@@ -35,6 +35,8 @@ def set_all_states(state):
         state.wavefield_modelled_plot = None
     if "complete_simulation" not in state:
         state.complete_simulation = False
+    if "user_email" not in state:
+        state.user_email = None
     return state
 
 
@@ -57,6 +59,7 @@ def reset_state(state):
     state.wavefield_modelled = False
     state.wavefield_modelled_plot = None
     state.complete_simulation = False
+    state.user_email = None
     return state
 
 
