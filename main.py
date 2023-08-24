@@ -11,7 +11,7 @@ try:
 
 # This block executes only on the first run when your package isn't installed
 except ModuleNotFoundError as e:
-    st.write(f"worked to module not found {os.environ['git_token']}")
+    st.write(f"worked to module not found {st.secrets['git_token']}")
     subprocess.Popen(
         [
             f"{sys.executable} -m pip install git+https://${st.secrets['git_token']}@github.com/gpap-gpap/anisotroPY.git@dev-fAVO"
