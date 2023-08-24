@@ -5,9 +5,13 @@ import matplotlib.lines as lines
 import pandas as pd
 import mantis.rock_physics.fluid as manFL
 import mantis.rock_physics as manRP
+import mantis.utilities as manUT
+import mantis.interface as manIN
 import numpy as np
 import re
 
+
+plt.style.use("mantis.mantis_plotting")
 # from mantis.rock_physics.fluid import fluid_data as fd
 regex = re.compile(
     r"([-!#-'*+/-9=?A-Z^-~]+(\.[-!#-'*+/-9=?A-Z^-~]+)*|\"([]!#-[^-~ \t]|(\\[\t -~]))+\")@([-!#-'*+/-9=?A-Z^-~]+(\.[-!#-'*+/-9=?A-Z^-~]+)*|\[[\t -Z^-~]*])"
@@ -57,6 +61,23 @@ model_parameters_dict = {
             "max": 0.40,
             "step": 0.05,
             "default": 0.20,
+        },
+    },
+    "Hudson": {
+        "identifier": "hudson",
+        "crack_density": {
+            "description": "Crack Density",
+            "min": 0.01,
+            "max": 0.1,
+            "step": 0.01,
+            "default": 0.03,
+        },
+        "aspect_ratio": {
+            "description": "Crack Aspect Ratio (exponential)",
+            "min": 0.00001,
+            "max": 0.001,
+            "step": 0.001,
+            "default": 0.0001,
         },
     },
 }
@@ -174,10 +195,10 @@ def fluid_mix_plot(f: manFL.FluidMix, title: str = ""):
 
 
 def rock_plot(cij: Callable = None):
-    freq = np.logspace(-2.0, 7.0, 50)
-    moduli = np.real(np.stack([cij(i) for i in freq]))
+    freq = np.linspace(-2.0, 7.0, 50)
+    moduli = np.array([np.real(cij(omega=i)) for i in freq])
     try:
-        fig, ax = plt.subplot(1, 1, figsize=(15, 15))
+        fig, ax = plt.subplots(1, 1, figsize=(15, 15))
         ax.set_xlabel("log frequency")
         ax.set_ylabel("rock elastic modulus (MPa)")
         ax.plot(freq, moduli[:, 0, 0], linewidth=5, label="$C_{11}$")
@@ -194,7 +215,7 @@ def rock_plot(cij: Callable = None):
         #     plt.setp(ax.get_yticklabels(), visible = False)
 
         # Reduce the space between each subplot
-        fig.subplots_adjust(wspace=0.1)
+        # fig.subplots_adjust(wspace=0.1)
         return fig
     except (AttributeError, ValueError):
         return "no model loaded"
@@ -208,6 +229,37 @@ def add_line(fig: plt.Figure, depth: float = 0.0):
 frequency_axis = np.linspace(-2.0, 7.0, 50)
 saturation_axis = np.linspace(0, 1, 50)
 
+
+def avo_plot(
+    *, cijTop: np.array, rhoTop: float, cijBot: np.array, rhoBot: float, angle: float
+):
+    t, cij, rho, vp, _ = generate_csv()
+    ref = []
+    for ind, c in enumerate(cij[:-1]):
+        c2 = cij[ind + 1]
+        rho2 = rho[ind + 1]
+        slow = manUT.incidence_angle_to_slowness(np.deg2rad(angle), vp[ind])
+
+        rt = manIN.ReflectionTransmissionMatrix(
+            cijUp=c, cijDown=c2, rhoUp=rho[ind], rhoDown=rho2
+        )
+        ref.append(
+            rt._reflectivity_transmissivity(horizontal_slowness=[slow, 0])[0][0, 0]
+        )
+    res = np.convolve(np.array(np.real(ref)), ar[:, 1], mode="same")
+    length_wavelet = len(ar[:, 1])
+    return (
+        t[:-1],
+        res[
+            length_wavelet // 2
+            - len(t) // 2 : length_wavelet // 2
+            - len(t) // 2
+            + len(t[:-1])
+        ],
+    )
+
+
+# def plot_AVO()
 
 # def plot_rock_fluid(cij: Callable | None = None, fluid: manFL.FluidMix = None):
 #     def fl_modulus(saturation: float):

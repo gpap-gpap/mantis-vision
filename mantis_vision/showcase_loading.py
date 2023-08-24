@@ -185,6 +185,7 @@ def add_title_step_3(state):
             name=second_fluid, temperature=23, pressure=16.0
         )
         state.current_fluid = manFL.FluidMix(fluid1=fluid1, fluid2=fluid2)
+
         state.current_fluid_plot = bf.fluid_mix_plot(
             state.current_fluid, title="Fluid properties"
         )
@@ -213,7 +214,7 @@ def add_title_step_3(state):
                 "Gassmann",
                 "SLS",
                 # "White",
-                # "Hudson",
+                "Hudson",
                 # "Chapman",
                 # "Continuous Random Medium",
             ],
@@ -237,6 +238,8 @@ def add_title_step_3(state):
             identifier=bf.model_parameters_dict[model]["identifier"],
             **state.current_parameters,
         )
+
+        state.current_model_plot = bf.rock_plot(state.current_model.Cij)
         with st.expander("Advanced"):
             try:
                 params = bf.model_parameters_dict[model]
@@ -260,7 +263,7 @@ def add_title_step_3(state):
         if radio == "fluid properties":
             cij_container.write(state.current_fluid_plot)
         elif radio == "rock properties":
-            pass
+            cij_container.write(state.current_model_plot)
         elif radio == "cij":
             cij_container.write(
                 bf.format_XY(state.current_model.Cij()), unsafe_allow_html=True
