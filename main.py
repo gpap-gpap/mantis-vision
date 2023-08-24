@@ -17,7 +17,7 @@ except ModuleNotFoundError as e:
     )
     subprocess.Popen(
         [
-            f"{sys.executable} -m pip install git+https://${{git_token}}@github.com/gpap-gpap/anisotroPY.git@dev-fAVO"
+            f"{sys.executable} -m pip install git+https://${{git_token}}@github.com/gpap-gpap/anisotroPY.git@dev-fAVO --user"
         ],
         shell=True,
     )
