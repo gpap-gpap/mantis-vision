@@ -11,13 +11,13 @@ try:
 
 # This block executes only on the first run when your package isn't installed
 except ModuleNotFoundError as e:
-    sleep_time = 90
+    sleep_time = 30
     dependency_warning = st.warning(
         f"Installing dependencies, this takes {sleep_time} seconds."
     )
     subprocess.Popen(
         [
-            f"{sys.executable} -m pip install git+https://${st.secrets['git_token']}@github.com/gpap-gpap/anisotroPY.git"
+            f"{sys.executable} -m pip install git+https://${{git_token}}@github.com/gpap-gpap/anisotroPY.git"
         ],
         shell=True,
     )
