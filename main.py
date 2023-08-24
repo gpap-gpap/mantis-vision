@@ -14,7 +14,7 @@ except ModuleNotFoundError as e:
     st.write(f"worked to module not found {os.environ['git_token']}")
     subprocess.Popen(
         [
-            f"{sys.executable} -m pip install git+https://${os.environ['git_token']}@github.com/gpap-gpap/anisotroPY.git@dev-fAVO"
+            f"{sys.executable} -m pip install git+https://${st.secrets['git_token']}@github.com/gpap-gpap/anisotroPY.git@dev-fAVO"
         ],
         shell=True,
     )
