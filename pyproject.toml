@@ -20,7 +20,7 @@ pytest = "^6.2.5"
 flake8 = "^6.1.0"
 mypy = "^1.5.1"
 black = { version = "^23.7.0", allow-prereleases = true }
-mantis = { git = "ssh://git@github.com/gpap-gpap/anisotroPY", branch = "dev-fAVO" }
+# mantis = { git = "ssh://git@github.com/gpap-gpap/anisotroPY", branch = "dev-fAVO" }
 
 
 [build-system]
