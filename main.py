@@ -2,6 +2,8 @@ import subprocess
 import sys
 import os
 import time
+import streamlit as st
+
 
 try:
     # replace "yourpackage" with the package you want to import
