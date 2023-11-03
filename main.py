@@ -24,7 +24,8 @@ except ModuleNotFoundError as e:
     # wait for subprocess to install package before running your actual code below
     time.sleep(sleep_time)
     dependency_warning.empty()
-from mantis_vision.look_and_feel import *
+# from mantis_vision.look_and_feel import *
+import mantis.rock_physics as manRP
 
 # from mantis_vision.showcase_loading import *
 
