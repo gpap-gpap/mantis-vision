@@ -3,5 +3,5 @@ scipy
 xarray
 streamlit
 matplotlib
-altair
-htbuilder
+# altair
+# htbuilder
