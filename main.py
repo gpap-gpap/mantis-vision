@@ -32,7 +32,7 @@ def main():
     state, status = st_layout_pipeline(
         background_image="images/phasor_logo.png",
         logo_image="images/phasor_logo.png",
-        style_css=".streamlit/style.css",
+        style_css="style/style.css",
     )
     # image = Image.open("images/advance.png")
     # st.image(image, width=100, caption="")
