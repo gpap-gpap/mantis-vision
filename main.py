@@ -24,23 +24,25 @@ except ModuleNotFoundError as e:
     # wait for subprocess to install package before running your actual code below
     time.sleep(sleep_time)
     dependency_warning.empty()
-from mantis_vision.look_and_feel import *
-from mantis_vision.showcase_loading import *
+# from mantis_vision.look_and_feel import *
+# from mantis_vision.showcase_loading import *
 
 
 def main():
-    state, status = st_layout_pipeline(
-        background_image="images/phasor_logo.png",
-        logo_image="images/phasor_logo.png",
-        style_css="style/style.css",
-    )
+    st.write("Hello World!")
+    # state, status = st_layout_pipeline(
+    #     background_image="images/phasor_logo.png",
+    #     logo_image="images/phasor_logo.png",
+    #     style_css="style/style.css",
+    # )
+
     # image = Image.open("images/advance.png")
     # st.image(image, width=100, caption="")
     # state.process_select, status = process_type_selection(status)
 
     # st.write("")
 
-    state, status = structured_pipeline(state, status)
+    # ### state, status = structured_pipeline(state, status)
 
     # state.process_select_confirmed = st.button("Start Process")
 
