@@ -8,18 +8,23 @@ readme = "README.md"
 packages = [{ include = "mantis_vision" }]
 
 [tool.poetry.dependencies]
-python = "^3.8.1,<3.12,!=3.9.7"
+python = "^3.9.1,<3.12,!=3.9.7"
+numpy = "^1.24.2"
+scipy = "^1.10.1"
+xarray = "^2023.1.0"
+rich = "^10.0.0"
 streamlit = "^1.25.0"
 altair = "<5"
 htbuilder = "^0.6.1"
 matplotlib = "^3.7.0"
+yagmail = "^0.15.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^6.2.5"
 flake8 = "^6.1.0"
 mypy = "^1.5.1"
 black = { version = "^23.7.0", allow-prereleases = true }
-# mantis = { git = "ssh://git@github.com/gpap-gpap/anisotroPY", branch = "main" }
+mantis = { git = "ssh://git@github.com/gpap-gpap/anisotroPY", branch = "dev-fAVO" }
 
 
 [build-system]

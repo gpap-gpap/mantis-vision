@@ -37,7 +37,7 @@ def add_bg_from_local(background_image):
 
 
 def add_image_and_title(logo_image):
-    col1, col2, col3 = st.columns([0.3, 1, 1])
+    col1, col2, col3, col4 = st.columns([0.1, 1, 0.3, 0.1])
     image = Image.open(logo_image)
     with col1:
         st.write("")
@@ -45,6 +45,11 @@ def add_image_and_title(logo_image):
         st.title("Mantis Vision")
     with col3:
         st.image(image, width=200)
+    with col4:
+        st.write("")
+    st.markdown(
+        f"A tool for rock physics analysis and forward modelling developed by ***mantis geophysics***, a University of Edinburgh spinout."
+    )
 
 
 def footer_layout(*args):
