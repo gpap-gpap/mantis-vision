@@ -1,7 +1,8 @@
 numpy
 scipy
 xarray
-streamlit
 matplotlib
+pandas
+streamlit
 # altair
 # htbuilder
