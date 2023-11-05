@@ -1,6 +1,5 @@
 from __future__ import annotations
 from typing import Callable
-import streamlit as st
 import matplotlib.pyplot as plt
 import matplotlib.lines as lines
 import pandas as pd
@@ -105,12 +104,6 @@ def plot_1d_model(dataframe: pd.DataFrame, highligh_layer: int = None):
             ax1.plot(vp, depth, drawstyle="steps", data=dataframe)
             ax2.plot(vs, depth, drawstyle="steps", data=dataframe)
             ax3.plot(rho, depth, drawstyle="steps", data=dataframe)
-            for i, ax in enumerate(fig.axes):
-                st.write(i, ax)
-                # ax.set_ylim(0, 1100)  # Set the depth range
-                # ax.invert_yaxis()
-                # ax.grid()
-                # ax.set_xlabel(curve_names[i + 1])
 
             for ax in [ax2, ax3]:
                 plt.setp(ax.get_yticklabels(), visible=False)
