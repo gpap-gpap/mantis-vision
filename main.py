@@ -32,11 +32,11 @@ from mantis_vision.showcase_loading import *
 
 def main():
     st.write("Hello World!")
-    # state, status = st_layout_pipeline(
-    #     background_image="images/phasor_logo.png",
-    #     logo_image="images/phasor_logo.png",
-    #     style_css="style/style.css",
-    # )
+    state, status = st_layout_pipeline(
+        background_image="images/phasor_logo.png",
+        logo_image="images/phasor_logo.png",
+        style_css="style/style.css",
+    )
 
     # image = Image.open("images/advance.png")
     # st.image(image, width=100, caption="")
@@ -44,7 +44,7 @@ def main():
 
     # st.write("")
 
-    # ### state, status = structured_pipeline(state, status)
+    state, status = structured_pipeline(state, status)
 
     # state.process_select_confirmed = st.button("Start Process")
 
