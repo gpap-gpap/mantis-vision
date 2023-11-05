@@ -146,7 +146,7 @@ def st_layout_pipeline(background_image, logo_image, style_css):
     Pipeline for definition of the streamlit app layout
     """
 
-    st.set_page_config(layout="wide")
+    # st.set_page_config(layout="wide")
     local_css(style_css)
     add_bg_from_local(background_image)
     add_image_and_title(logo_image)

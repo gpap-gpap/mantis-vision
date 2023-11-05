@@ -31,7 +31,8 @@ from mantis_vision.showcase_loading import *
 
 
 def main():
-    st.write("Hello World!")
+    # st.write("Hello World!")
+    st.set_page_config(layout="wide")
     state, status = st_layout_pipeline(
         background_image="images/phasor_logo.png",
         logo_image="images/phasor_logo.png",
