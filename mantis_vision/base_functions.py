@@ -193,7 +193,7 @@ def rock_plot(cij: Callable = None):
     freq = np.linspace(-2.0, 7.0, 50)
     moduli = np.array([np.real(cij(omega=i)) for i in freq])
     try:
-        fig, ax = plt.subplots(1, 1, figsize=(15, 15))
+        fig, ax = plt.subplots(1, 1, figsize=(15, 5))
         ax.set_xlabel("log frequency")
         ax.set_ylabel("rock elastic modulus (MPa)")
         ax.plot(freq, moduli[:, 0, 0], linewidth=5, label="$C_{11}$")

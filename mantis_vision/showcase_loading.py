@@ -316,6 +316,7 @@ def structured_pipeline(state, status):
             try:
                 yag = yagmail.SMTP(
                     "mantis.from.image@gmail.com",
+                    # oauth2_file=".streamlit/credentials.json",
                     oauth2_file=".streamlit/credentials.json",
                 )
                 yag.send(to=email, subject="test")
