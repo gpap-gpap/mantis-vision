@@ -4,5 +4,5 @@ xarray
 matplotlib
 pandas
 streamlit
-# altair
-# htbuilder
+altair
+htbuilder
