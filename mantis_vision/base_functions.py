@@ -92,7 +92,7 @@ def plot_1d_model(dataframe: pd.DataFrame, highligh_layer: int = None):
         pass
     else:
         try:
-            fig, axes = plt.subplots(figsize=(10, 15))
+            fig, axes = plt.subplots(1, 3, figsize=(10, 15))
             curve_names = expected_logs
 
             depth, vp, vs, rho = tuple(expected_logs)
