@@ -92,7 +92,7 @@ def plot_1d_model(dataframe: pd.DataFrame, highligh_layer: int = None):
         pass
     else:
         try:
-            fig, axes = plt.subplots(1, 3, figsize=(10, 15))
+            fig, axes = plt.subplots(figsize=(10, 15))
             curve_names = expected_logs
 
             depth, vp, vs, rho = tuple(expected_logs)
@@ -104,7 +104,7 @@ def plot_1d_model(dataframe: pd.DataFrame, highligh_layer: int = None):
             ax1.plot(vp, depth, drawstyle="steps", data=dataframe)
             ax2.plot(vs, depth, drawstyle="steps", data=dataframe)
             ax3.plot(rho, depth, drawstyle="steps", data=dataframe)
-            for i, ax in enumerate(fig.axes):
+            for i, ax in enumerate(axes):
                 ax.set_ylim(0, 1100)  # Set the depth range
                 ax.invert_yaxis()
                 ax.grid()
