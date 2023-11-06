@@ -166,25 +166,25 @@ def plot_rock_physics_models():
         )
 
 
-def plot_fAVO():
-    (
-        col1,
-        col2,
-    ) = st.columns([0.3, 0.3])
-    with col1:
-        second_fluid = st.radio(
-            label="Displacement Fluid",
-            options=["CarbonDioxide", "Hydrogen", "Methane"],
-        )
+# def plot_fAVO():
+#     (
+#         col1,
+#         col2,
+#     ) = st.columns([0.3, 0.3])
+#     with col1:
+#         second_fluid = st.radio(
+#             label="Displacement Fluid",
+#             options=["CarbonDioxide", "Hydrogen", "Methane"],
+#         )
 
-        fluid1 = manFL.Fluid.from_presets(
-            name="Water",
-            temperature=st.session_state.temp,
-            pressure=st.session_state.pres,
-        )
-        fluid2 = manFL.Fluid.from_presets(
-            name=second_fluid,
-            temperature=st.session_state.temp,
-            pressure=st.session_state.pres,
-        )
-        st.session_state.current_fluid = manFL.FluidMix(fluid1=fluid1, fluid2=fluid2)
+#         fluid1 = manFL.Fluid.from_presets(
+#             name="Water",
+#             temperature=st.session_state.temp,
+#             pressure=st.session_state.pres,
+#         )
+#         fluid2 = manFL.Fluid.from_presets(
+#             name=second_fluid,
+#             temperature=st.session_state.temp,
+#             pressure=st.session_state.pres,
+#         )
+#         st.session_state.current_fluid = manFL.FluidMix(fluid1=fluid1, fluid2=fluid2)

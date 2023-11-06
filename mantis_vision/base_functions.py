@@ -200,7 +200,7 @@ def rock_plot(cij: Callable = None):
         ax.set_xlabel("log frequency")
         ax.set_ylabel("rock elastic modulus (GPa)")
         ax.plot(freq, moduli[:, 0, 0], linewidth=5, label="$C_{11}$")
-        ax.plot(freq, moduli[:, 1, 1], linewidth=4, label="$C_{22}}$")
+        ax.plot(freq, moduli[:, 1, 1], linewidth=4, label="$C_{22}$")
         ax.plot(freq, moduli[:, 2, 2], label="$C_{33}$")
         ax.legend(bbox_to_anchor=[0.9, 0.3], labelcolor="linecolor")
         # for i, ax in enumerate(fig.axes):
