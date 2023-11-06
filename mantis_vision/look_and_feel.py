@@ -48,7 +48,7 @@ def add_image_and_title(logo_image):
     with col4:
         st.write("")
     st.markdown(
-        f"A tool for rock physics analysis and forward modelling developed by ***mantis geophysics***, a University of Edinburgh spinout."
+        f"## A tool for rock physics analysis and forward modelling developed as part of *:green[mantis geophysics]*, a University of Edinburgh spinout."
     )
 
 
@@ -57,7 +57,7 @@ def footer_layout(*args):
     <style>
       # MainMenu {visibility: hidden;}
       footer {visibility: hidden;}
-     .stApp { bottom: 40px; }
+     .stApp { bottom: 29px; }
     </style>
     """
 
@@ -71,7 +71,7 @@ def footer_layout(*args):
         background_color="#005E00",
         text_align="center",
         text_weight="bold",
-        height="40px",
+        height="25px",
         opacity=1,
     )
 

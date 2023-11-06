@@ -213,9 +213,9 @@ def add_title_step_3(state):
             options=[
                 "Gassmann",
                 "SLS",
-                # "White",
+                "White",
                 "Hudson",
-                # "Chapman",
+                "Chapman",
                 # "Continuous Random Medium",
             ],
         )

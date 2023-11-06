@@ -24,7 +24,7 @@ except ModuleNotFoundError as e:
     # wait for subprocess to install package before running your actual code below
     time.sleep(sleep_time)
     dependency_warning.empty()
-from mantis_vision.look_and_feel import *
+import mantis_vision.look_and_feel as lf
 import mantis.rock_physics as manRP
 
 from mantis_vision.showcase_loading import *
@@ -35,7 +35,7 @@ import mantis_vision.simple_workflow as sw
 def main():
     # st.write("Hello World!")
     st.set_page_config(layout="wide")
-    state, status = st_layout_pipeline(
+    state, status = lf.st_layout_pipeline(
         background_image="images/phasor_logo.png",
         logo_image="images/phasor_logo.png",
         style_css="style/style.css",

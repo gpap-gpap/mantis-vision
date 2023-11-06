@@ -18,7 +18,7 @@ def load_1d_model():
         elif uploaded_file.name.endswith(".xlsx"):
             st.session_state.input_file = pd.read_excel(uploaded_file, dtype=float)
     if st.session_state.input_file is not None:
-        st.info("File uploaded")
+        st.toast("File uploaded")
 
 
 def plot_1d_model_to_sidebar(df: pd.DataFrame):
@@ -41,12 +41,12 @@ def select_earth_layer():
     )
     display = st.session_state.input_file.iloc[st.session_state.current_layer]
 
-    display["thickness"] = round(
+    display["Thickness"] = round(
         -display["Depth"]
         + st.session_state.input_file.iloc[st.session_state.current_layer + 1]["Depth"],
         1,
     )
-    st.write(display)
+    st.dataframe(display)
 
 
 def choose_rock_physics_models():
@@ -62,9 +62,16 @@ def choose_rock_physics_models():
             label="Displacement Fluid",
             options=["CarbonDioxide", "Hydrogen", "Methane"],
         )
-        fluid1 = manFL.Fluid.from_presets(name="Water", temperature=23, pressure=16.0)
+
+        fluid1 = manFL.Fluid.from_presets(
+            name="Water",
+            temperature=st.session_state.temp,
+            pressure=st.session_state.pres,
+        )
         fluid2 = manFL.Fluid.from_presets(
-            name=second_fluid, temperature=23, pressure=16.0
+            name=second_fluid,
+            temperature=st.session_state.temp,
+            pressure=st.session_state.pres,
         )
         st.session_state.current_fluid = manFL.FluidMix(fluid1=fluid1, fluid2=fluid2)
 
@@ -95,10 +102,10 @@ def choose_rock_physics_models():
             options=[
                 "Gassmann",
                 "SLS",
-                # "White",
+                "White",
                 "Hudson",
-                # "Chapman",
-                # "Continuous Random Medium",
+                "Chapman",
+                "Continuous Random Medium",
             ],
         )
         for key, val in bf.model_parameters_dict[model].items():
@@ -114,15 +121,12 @@ def choose_rock_physics_models():
             if key != "identifier"
         }
         fluid = {"fluid": st.session_state.current_fluid}
-        st.write(f"{second_fluid} displacing water using {model} model")
-        # st.write(model_parameters)
 
         st.session_state.current_parameters = {
             **layer_parameters,
             **fluid,
             **model_parameters,
         }
-        st.write(st.session_state.current_parameters)
         st.session_state.current_model = manRP.models(
             identifier=bf.model_parameters_dict[model]["identifier"],
             **st.session_state.current_parameters,
@@ -145,6 +149,7 @@ def choose_rock_physics_models():
                         )
             except KeyError:
                 pass
+    st.markdown(f"### {second_fluid} displacing water using {model} model")
 
 
 def plot_rock_physics_models():
@@ -159,3 +164,27 @@ def plot_rock_physics_models():
         cij_container.write(
             bf.format_XY(st.session_state.current_model.Cij()), unsafe_allow_html=True
         )
+
+
+def plot_fAVO():
+    (
+        col1,
+        col2,
+    ) = st.columns([0.3, 0.3])
+    with col1:
+        second_fluid = st.radio(
+            label="Displacement Fluid",
+            options=["CarbonDioxide", "Hydrogen", "Methane"],
+        )
+
+        fluid1 = manFL.Fluid.from_presets(
+            name="Water",
+            temperature=st.session_state.temp,
+            pressure=st.session_state.pres,
+        )
+        fluid2 = manFL.Fluid.from_presets(
+            name=second_fluid,
+            temperature=st.session_state.temp,
+            pressure=st.session_state.pres,
+        )
+        st.session_state.current_fluid = manFL.FluidMix(fluid1=fluid1, fluid2=fluid2)

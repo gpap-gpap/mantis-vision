@@ -7,6 +7,7 @@ import mantis.rock_physics.fluid as manFL
 import mantis.rock_physics as manRP
 import mantis.utilities as manUT
 import mantis.interface as manIN
+import mantis.frequency_avo as manFAVO
 import numpy as np
 import re
 
@@ -154,14 +155,16 @@ def fluid_mix_plot(f: manFL.FluidMix, title: str = ""):
     saturation = np.linspace(0, 1, 100)
     plots = {}
     plots["uniform"] = np.array([fluid(sw, 1) for sw in saturation])
-    plots["intermediate"] = np.array([fluid(sw, 5 * mod2 / mod1) for sw in saturation])
-    plots["patchy"] = np.array([fluid(sw, 2 * mod2 / mod1) for sw in saturation])
+    plots["intermediate"] = np.array(
+        [fluid(sw, np.sqrt(mod2 / mod1)) for sw in saturation]
+    )
+    plots["patchy"] = np.array([fluid(sw, mod2 / mod1) for sw in saturation])
 
-    fig, ax = plt.subplots(3, 1, figsize=(10, 8))
+    fig, ax = plt.subplots(3, 1, figsize=(15, 10))
     # fig.tight_layout()
     # plt.subplots_adjust(wspace=4, hspace=None)
     fig.subplots_adjust(hspace=0.1)
-    ax[0].set_ylabel("Fluid Modulus (GPa)")
+    ax[0].set_ylabel("Fluid Modulus (MPa)")
     ax[0].set_title(title)
     for key, value in plots.items():
         ax[0].plot(saturation, value[:, 0], label=key)
@@ -195,7 +198,7 @@ def rock_plot(cij: Callable = None):
     try:
         fig, ax = plt.subplots(1, 1, figsize=(15, 5))
         ax.set_xlabel("log frequency")
-        ax.set_ylabel("rock elastic modulus (MPa)")
+        ax.set_ylabel("rock elastic modulus (GPa)")
         ax.plot(freq, moduli[:, 0, 0], linewidth=5, label="$C_{11}$")
         ax.plot(freq, moduli[:, 1, 1], linewidth=4, label="$C_{22}}$")
         ax.plot(freq, moduli[:, 2, 2], label="$C_{33}$")
@@ -228,7 +231,8 @@ saturation_axis = np.linspace(0, 1, 50)
 def avo_plot(
     *, cijTop: np.array, rhoTop: float, cijBot: np.array, rhoBot: float, angle: float
 ):
-    t, cij, rho, vp, _ = generate_csv()
+    # t, cij, rho, vp, _ = generate_csv()
+    manUT.incidence_angle_to_slowness(np.deg2rad(angle), vp[ind])
     ref = []
     for ind, c in enumerate(cij[:-1]):
         c2 = cij[ind + 1]
