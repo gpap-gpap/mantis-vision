@@ -31,10 +31,11 @@ from mantis_vision.showcase_loading import *
 from mantis_vision.send_email import *
 import mantis_vision.simple_workflow as sw
 
+st.set_page_config(layout="wide")
+
 
 def main():
     # st.write("Hello World!")
-    # st.set_page_config(layout="wide")
     state, status = lf.st_layout_pipeline(
         background_image="images/phasor_logo.png",
         logo_image="images/phasor_logo.png",
