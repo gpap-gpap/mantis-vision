@@ -34,7 +34,7 @@ import mantis_vision.simple_workflow as sw
 
 def main():
     # st.write("Hello World!")
-    st.set_page_config(layout="wide")
+    # st.set_page_config(layout="wide")
     state, status = lf.st_layout_pipeline(
         background_image="images/phasor_logo.png",
         logo_image="images/phasor_logo.png",
