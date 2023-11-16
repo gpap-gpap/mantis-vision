@@ -144,9 +144,9 @@ def choose_rock_physics_models():
             **st.session_state.current_parameters,
         )
         st.session_state.current_fluid.saturation = 0.8
-        st.write(
-            st.session_state.current_model, st.session_state.current_fluid.saturation
-        )
+        # st.write(
+        #     st.session_state.current_model, st.session_state.current_fluid.saturation
+        # )
 
         st.session_state.current_model_plot = bf.rock_plot(
             st.session_state.current_model.Cij
