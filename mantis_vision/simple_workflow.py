@@ -103,9 +103,9 @@ def choose_rock_physics_models():
                 "Gassmann",
                 "SLS",
                 "White",
-                "Hudson",
-                "Chapman",
-                "Continuous Random Medium",
+                # "Chapman",
+                # "Chapman",
+                # "Continuous Random Medium",
             ],
         )
         for key, val in bf.model_parameters_dict[model].items():
@@ -120,6 +120,18 @@ def choose_rock_physics_models():
             for key, val in bf.model_parameters_dict[model].items()
             if key != "identifier"
         }
+        model_parameters = {
+            key: (
+                10**val
+                if (
+                    key == "permeability"
+                    or key == "bubble_radius"
+                    or key == "aspect_ratio"
+                )
+                else val
+            )
+            for key, val in model_parameters.items()
+        }
         fluid = {"fluid": st.session_state.current_fluid}
 
         st.session_state.current_parameters = {
@@ -130,6 +142,10 @@ def choose_rock_physics_models():
         st.session_state.current_model = manRP.models(
             identifier=bf.model_parameters_dict[model]["identifier"],
             **st.session_state.current_parameters,
+        )
+        st.session_state.current_fluid.saturation = 0.8
+        st.write(
+            st.session_state.current_model, st.session_state.current_fluid.saturation
         )
 
         st.session_state.current_model_plot = bf.rock_plot(

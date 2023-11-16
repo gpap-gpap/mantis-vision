@@ -31,7 +31,7 @@ from mantis_vision.showcase_loading import *
 from mantis_vision.send_email import *
 import mantis_vision.simple_workflow as sw
 
-st.set_page_config(layout="wide")
+# st.set_page_config(layout="wide")
 
 
 def main():
@@ -95,16 +95,18 @@ def main():
         st.button("Plot model", on_click=set_state, args=[3])
     if st.session_state.stage >= 3:
         sw.plot_rock_physics_models()
-    if st.session_state.stage == 3:
-        st.button("Do some AVO", on_click=set_state, args=[4])
-    if st.session_state.stage >= 4:
-        form = st.form(key="email-test")
-        name = form.text_input("Enter your name")
-        submit = form.form_submit_button("Submit")
-        if submit:
-            st.write(f"hello {name}")
-            send_email("gpap.gpap@gmail.com")
+        st.button("Reset", on_click=reset_callback)
+    # if st.session_state.stage == 3:
+    #     st.button("Do some AVO", on_click=set_state, args=[4])
+    # if st.session_state.stage >= 4:
+    #     form = st.form(key="email-test")
+    #     name = form.text_input("Enter your name")
+    #     submit = form.form_submit_button("Submit")
+    #     if submit:
+    #         st.write(f"hello {name}")
+    #         send_email("gpap.gpap@gmail.com")
 
 
 if __name__ == "__main__":
     main()
+    # st.write("wee baws")

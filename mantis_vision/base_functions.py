@@ -75,10 +75,79 @@ model_parameters_dict = {
         },
         "aspect_ratio": {
             "description": "Crack Aspect Ratio (exponential)",
-            "min": 0.00001,
-            "max": 0.001,
-            "step": 0.001,
-            "default": 0.0001,
+            "min": -6.0,
+            "max": -4.0,
+            "step": 0.5,
+            "default": -4.0,
+        },
+    },
+    "White": {
+        "identifier": "white",
+        "Km": {
+            "description": "Mineral modulus",
+            "min": 10,
+            "max": 50,
+            "step": 1,
+            "default": 37,
+        },
+        "Phi": {
+            "description": "Porosity",
+            "min": 0.05,
+            "max": 0.40,
+            "step": 0.05,
+            "default": 0.20,
+        },
+        "permeability": {
+            "description": "Absolute Permeability (log)",
+            "min": -15,
+            "max": -10,
+            "step": 1,
+            "default": 10,
+        },
+        "bubble_radius": {
+            "description": "Radius of Gas Bubbles (log)",
+            "min": -4.0,
+            "max": -1.0,
+            "step": 0.5,
+            "default": -2.0,
+        },
+    },
+    "Chapman": {
+        "identifier": "chapman",
+        "Km": {
+            "description": "Mineral modulus",
+            "min": 10,
+            "max": 50,
+            "step": 1,
+            "default": 37,
+        },
+        "Phi": {
+            "description": "Porosity",
+            "min": 0.05,
+            "max": 0.40,
+            "step": 0.05,
+            "default": 0.20,
+        },
+        "eps": {
+            "description": "Crack Density",
+            "min": 0.01,
+            "max": 0.1,
+            "step": 0.01,
+            "default": 0.03,
+        },
+        "epsf": {
+            "description": "Horizontal Fracture Density",
+            "min": 0.01,
+            "max": 0.1,
+            "step": 0.01,
+            "default": 0.03,
+        },
+        "epsfX": {
+            "description": "Vertical Fracture Density",
+            "min": 0.01,
+            "max": 0.1,
+            "step": 0.01,
+            "default": 0.03,
         },
     },
 }
@@ -190,6 +259,33 @@ def fluid_mix_plot(f: manFL.FluidMix, title: str = ""):
     ax[2].legend()
 
     return fig
+
+
+def rock_plot2(cij: Callable = None):
+    freq = np.linspace(-2.0, 7.0, 50)
+    moduli = np.array([np.real(cij(omega=i)) for i in freq])
+    try:
+        fig, ax = plt.subplots(1, 1, figsize=(15, 5))
+        ax.set_xlabel("log frequency")
+        ax.set_ylabel("rock elastic modulus (GPa)")
+        ax.plot(freq, moduli[:, 0, 0], linewidth=5, label="$C_{11}$")
+        ax.plot(freq, moduli[:, 1, 1], linewidth=4, label="$C_{22}$")
+        ax.plot(freq, moduli[:, 2, 2], label="$C_{33}$")
+        ax.legend(bbox_to_anchor=[0.9, 0.3], labelcolor="linecolor")
+        # for i, ax in enumerate(fig.axes):
+        #     ax.set_ylim(700, 1100) # Set the depth range
+        #     ax.invert_yaxis()
+        #     ax.grid()
+        #     ax.set_xlabel(curve_names[i+1])
+
+        # for ax in [ax2, ax3]:
+        #     plt.setp(ax.get_yticklabels(), visible = False)
+
+        # Reduce the space between each subplot
+        # fig.subplots_adjust(wspace=0.1)
+        return fig
+    except (AttributeError, ValueError):
+        return "no model loaded"
 
 
 def rock_plot(cij: Callable = None):
