@@ -48,8 +48,8 @@ def add_image_and_title(logo_image):
     with col4:
         st.write("")
     st.markdown(
-        # f"## A tool for rock physics analysis and forward modelling developed as part of *:green[mantis geophysics]*, a University of Edinburgh spinout."
-        f"## Yes, I did get into that much trouble for the EPS seminar..."
+        f"## A tool for rock physics analysis and forward modelling developed as part of *:green[mantis geophysics]*, a University of Edinburgh spinout."
+        # f"## Yes, I did get into that much trouble for the EPS seminar..."
     )
 
 
