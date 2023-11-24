@@ -99,11 +99,12 @@ def main():
         st.button("Do some AVO", on_click=set_state, args=[4])
     if st.session_state.stage >= 4:
         form = st.form(key="email-test")
+        email = form.text_input("Enter your email")
         name = form.text_input("Enter your name")
         submit = form.form_submit_button("Submit")
         if submit:
             st.write(f"hello {name}")
-            send_email("gpap.gpap@gmail.com")
+            send_email(email, contents=f"hello {name}")
 
 
 if __name__ == "__main__":

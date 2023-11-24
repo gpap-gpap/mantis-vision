@@ -18,7 +18,7 @@ json.dump(config, creds)
 creds.flush()
 
 
-def send_email(email: str, contents: str, attachment: str):
+def send_email(email: str, contents: str):
     if re.fullmatch(bf.regex, email) is None:
         st.write("Email not sent or invalid email address")
     else:
@@ -29,7 +29,11 @@ def send_email(email: str, contents: str, attachment: str):
                 oauth2_file=creds.name,
             )
             print(creds.name)
-            yag.send(to=email, subject="test")
+            yag.send(
+                to=email,
+                subject="Mantis Vision",
+                contents=contents,
+            )
         except Exception as e:
             st.write(e)
     st.toast("Thank you for your feedback!")
