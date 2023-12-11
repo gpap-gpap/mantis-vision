@@ -104,7 +104,7 @@ def main():
         submit = form.form_submit_button("Submit")
         if submit:
             st.write(f"hello {name}")
-            send_email(email, contents=f"hello {name}")
+            send_email(email)
 
 
 if __name__ == "__main__":
