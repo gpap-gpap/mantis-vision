@@ -165,7 +165,9 @@ def choose_rock_physics_models():
                         )
             except KeyError:
                 pass
-    st.markdown(f"### {second_fluid} displacing water using {model} model")
+    st.markdown(
+        f"### {second_fluid} displacing water using {model} model at 80% saturation"
+    )
 
 
 def plot_rock_physics_models():

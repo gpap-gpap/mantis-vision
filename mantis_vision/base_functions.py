@@ -233,7 +233,7 @@ def fluid_mix_plot(f: manFL.FluidMix, title: str = ""):
     # fig.tight_layout()
     # plt.subplots_adjust(wspace=4, hspace=None)
     fig.subplots_adjust(hspace=0.1)
-    ax[0].set_ylabel("Fluid Modulus (MPa)")
+    ax[0].set_ylabel("Fluid Modulus (GPa)")
     ax[0].set_title(title)
     for key, value in plots.items():
         ax[0].plot(saturation, value[:, 0], label=key)

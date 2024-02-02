@@ -4,9 +4,6 @@ import re
 import json, tempfile
 import mantis_vision.base_functions as bf
 
-
-# read credentials from secrets:
-
 config = {
     "email_address": st.secrets["gmail"]["email_address"],
     "google_client_id": st.secrets["gmail"]["google_client_id"],
@@ -24,11 +21,9 @@ def send_email(email: str):
     else:
         try:
             yag = yagmail.SMTP(
-                "mantis.from.image@gmail.com",
-                # oauth2_file=".streamlit/credentials.json",
+                user="mantis.from.image@gmail.com",
                 oauth2_file=creds.name,
             )
-            print(creds.name)
             yag.send(
                 to=email,
                 subject="Mantis Vision",

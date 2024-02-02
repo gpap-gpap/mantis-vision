@@ -31,7 +31,7 @@ from mantis_vision.showcase_loading import *
 from mantis_vision.send_email import *
 import mantis_vision.simple_workflow as sw
 
-st.set_page_config(layout="wide")
+# st.set_page_config(layout="wide")
 
 
 def main():
@@ -77,6 +77,10 @@ def main():
         st.session_state.stage = 0
         reset_state(st.session_state)
 
+    def email_callback(email: str):
+        send_email(email)
+        reset_callback()
+
     if st.session_state.stage == 0:
         sw.load_1d_model()
         if st.session_state.input_file is not None:
@@ -97,14 +101,25 @@ def main():
         sw.plot_rock_physics_models()
     if st.session_state.stage == 3:
         st.button("Do some AVO", on_click=set_state, args=[4])
-    if st.session_state.stage >= 4:
-        form = st.form(key="email-test")
-        email = form.text_input("Enter your email")
-        name = form.text_input("Enter your name")
-        submit = form.form_submit_button("Submit")
-        if submit:
-            st.write(f"hello {name}")
-            send_email(email)
+    if st.session_state.stage >= 4 and st.session_state.stage < 5:
+        email_sender = st.text_input(
+            "Enter your email address to receive a small report"
+        )
+        feedback = st.text_input("Please leave some feedback:")
+        # email_receiver = st.text_input("To")
+        if st.button("Send Email"):
+            send_email(email_sender)
+            st.write("Email sent")
+            reset_callback()
+        # form = st.form(key="email-test")
+        # email = form.text_input("Enter your email")
+        # name = form.text_input("Enter your name")
+        # submit = form.form_submit_button("Submit", on_click=set_state, args=[5])
+        # if submit:
+        #     # st.write(f"hello {name}")
+        #     send_email(email)
+    if st.session_state.stage == 5:
+        st.button("Reset", on_click=reset_callback)
 
 
 if __name__ == "__main__":

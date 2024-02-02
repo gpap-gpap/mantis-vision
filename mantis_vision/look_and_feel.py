@@ -37,19 +37,16 @@ def add_bg_from_local(background_image):
 
 
 def add_image_and_title(logo_image):
-    col1, col2, col3, col4 = st.columns([0.1, 1, 0.3, 0.1])
+    col2, col3, col4 = st.columns([1, 0.3, 0.1])
     image = Image.open(logo_image)
-    with col1:
-        st.write("")
     with col2:
-        st.title("Mantis Vision")
+        st.markdown(f"# Mantis Vision")
     with col3:
         st.image(image, width=200)
     with col4:
         st.write("")
     st.markdown(
-        f"## A tool for rock physics analysis and forward modelling developed as part of *:green[mantis geophysics]*, a University of Edinburgh spinout."
-        # f"## Yes, I did get into that much trouble for the EPS seminar..."
+        f"## A tool for rock physics analysis and forward seismic modelling developed as part of University of Edinburgh spinout *:green[mantis geophysics]*"
     )
 
 

@@ -16,8 +16,6 @@ matplotlib = "^3.7.0"
 pandas = "^2.1"
 streamlit = "^1.25.0"
 htbuilder = "^0.6.1"
-yagmail = "^0.15.0"
-
 [tool.poetry.group.dev.dependencies]
 pytest = "^6.2.5"
 flake8 = "^6.1.0"
